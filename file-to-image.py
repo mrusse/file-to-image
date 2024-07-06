@@ -7,8 +7,8 @@ import numpy as np
 from PIL import Image, ImageColor
 
 def encode_text(filename, rainbow):
-    with open(filename, 'r') as txtfile:
-        text_string = txtfile.read()
+    with open(filename, 'r',encoding='utf8') as file:
+        text_string = file.read()
 
     text_binary = ''.join(format(ord(i),'b').zfill(8) for i in text_string)
 
