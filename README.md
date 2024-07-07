@@ -2,7 +2,7 @@
 
 Convert any file to an image representing the binary data. The script can also decode the generated images.
 
-![README_converted](https://github.com/mrusse/file-to-image/assets/38119333/931d5fb3-5383-4b8c-9e74-683e8b252e57)
+![README_converted](https://github.com/mrusse/file-to-image/assets/38119333/5d4fe1b6-e6d1-43e3-8012-0604973352b0)
 
 The example above is this README file represented as an image (so meta).
 
@@ -15,7 +15,7 @@ pip install -r requirements.txt
 
 # Usage
 
-To encode a file use the `-e` flag. Example:
+To encode a file use the `-e` flag:
 ```
 python file-to-image.py -e file.txt
 ```
