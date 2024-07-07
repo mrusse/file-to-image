@@ -1,3 +1,6 @@
 *.txt
 *.png
 *.mp4
+.venv
+
+!requirements.txt

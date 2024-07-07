@@ -1,9 +1,10 @@
 import math
+import time
 import random
 import os.path
 import argparse
 import numpy as np 
-
+from tqdm import tqdm
 from PIL import Image, ImageColor
 Image.MAX_IMAGE_PIXELS = None
 
@@ -18,7 +19,9 @@ def encode_file(filename, rainbow, scale):
     used_height = 0
     current_pixel = 0
 
-    for i in range(side_length):
+    progress_bar = tqdm(range(side_length), desc = "Encoding file: ", bar_format='{desc}{percentage:3.0f}% |{bar}| Image Line Count: {n_fmt}/{total_fmt}')
+
+    for i in progress_bar:
         for j in range(side_length):
             if(not (current_pixel >= len(text_binary))):
                 if(text_binary[current_pixel] == '0'):
@@ -47,7 +50,11 @@ def encode_file(filename, rainbow, scale):
         
     img = img.crop((0,0,side_length,used_height))
     img = img.resize((side_length * scale, used_height * scale), Image.NEAREST)
-    img.save(filename.replace(extension,"png").replace(filename_no_extension,filename_no_extension + "_converted"))
+
+    if(extension == ""):
+        img.save((filename + ".png").replace(filename_no_extension,filename_no_extension + "_converted"))
+    else:
+        img.save(filename.replace(extension,"png").replace(filename_no_extension,filename_no_extension + "_converted"))
     
 
 def decode_img(filename, scale):
@@ -64,7 +71,9 @@ def decode_img(filename, scale):
     white = np.array([255, 255, 255])
     end = np.array([254, 254, 254])
 
-    for line in numpy_array:
+    progress_bar = tqdm(numpy_array, desc = "Decoding image: ", bar_format='{desc}{percentage:3.0f}% |{bar}| Image Line Count: {n_fmt}/{total_fmt}')
+
+    for line in progress_bar:
         for pixel in line:
             if(np.array_equal(pixel, end)):
                return text_binary
@@ -96,8 +105,9 @@ parser.add_argument('-r',action=argparse.BooleanOptionalAction, help="Enable rai
 parser.add_argument('-s',type=int, help="Scale factor. If converted image was scaled then same scale needs to be supplied when decoding")
 args = parser.parse_args()
 
-scale = 1
+start_time = time.time()
 
+scale = 1
 if(args.s):
     scale = args.s
 
@@ -109,3 +119,5 @@ if(args.d):
     orig_filename = args.d[0].split("_converted")[0] + "_original." + args.d[1]
     binary_string  = decode_img(args.d[0], scale)
     binary_string_to_file(binary_string, orig_filename)
+
+print("\nFinished in: %s seconds!" % '{0:.2f}'.format(time.time() - start_time))
