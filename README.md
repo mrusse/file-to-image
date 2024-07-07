@@ -4,6 +4,8 @@ Convert any file to an image representing the binary data. The script can also d
 
 ![README_converted](https://github.com/mrusse/file-to-image/assets/38119333/032d91fa-b272-4324-a232-b151d4237f46)
 
+The example above is this README file represented as an image (so meta).
+
 # Setup
 
 Install the requirements:
