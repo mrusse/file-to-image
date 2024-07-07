@@ -37,8 +37,42 @@ def encode_text(filename, rainbow):
     extension = os.path.splitext(filename)[1][1:]
     img.save(filename.replace(extension,"png"))
 
-    #2d array of linex and pixels
+def decode_img(filename):
+    img = Image.open(filename)
     numpy_array = np.array(img)
+    text_binary = ""
+    text_binary_array = []
+    byte_count = 0
+
+    white = np.array([255, 255, 255])
+
+    for line in numpy_array:
+        for pixel in line:
+            if(byte_count == 8):
+                if(text_binary == "00000000"):
+                    return binary_array_to_string(text_binary_array)
+
+                byte_count = 0
+                text_binary_array.append(text_binary)
+                text_binary = ""
+
+            if(np.array_equal(pixel, white)):
+                byte_count += 1
+                text_binary += '0'
+            else:
+                byte_count += 1
+                text_binary += '1'
+
+def binary_array_to_string(binary_array):
+    characters = []
+    for b in binary_array:
+        character = chr(int(b, 2))
+        if ord(character) < 128:
+            characters.append(character)
+        else:
+            characters.append('?')
+
+    return ''.join(characters)
 
 def get_square_size(x):
     s = math.ceil(math.sqrt(x))
@@ -56,3 +90,6 @@ if(args.e and args.r):
     encode_text(args.e, True)
 if(args.e and not args.r):
     encode_text(args.e, False)
+if(args.d):
+    with open("output.txt", "w") as output_file:
+        output_file.write(decode_img(args.d))
