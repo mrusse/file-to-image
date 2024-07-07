@@ -6,7 +6,7 @@ import numpy as np
 
 from PIL import Image, ImageColor
 
-def encode_file(filename, rainbow):
+def encode_file(filename, rainbow, scale):
     with open(filename, 'rb') as file:
         binary_content = file.read()
     text_binary = ''.join(format(byte, '08b') for byte in binary_content)
@@ -35,10 +35,16 @@ def encode_file(filename, rainbow):
 
     extension = os.path.splitext(filename)[1][1:]
     filename_no_extension = filename.split('.')[0]
+    img = img.resize((side_length * scale, side_length * scale), Image.NEAREST)
     img.save(filename.replace(extension,"png").replace(filename_no_extension,filename_no_extension + "_converted"))
+    
 
-def decode_img(filename):
+def decode_img(filename, scale):
     img = Image.open(filename)
+
+    side_length = img.width
+    img = img.resize((int(side_length * 1/scale), int(side_length * 1/scale)), Image.NEAREST)
+    
     numpy_array = np.array(img)
     text_binary = ""
 
@@ -71,16 +77,22 @@ def get_square_size(x):
     return s
 
 parser = argparse.ArgumentParser(description='file-to-image')
-parser.add_argument('-e',type=str, help="file to be encoded")
+parser.add_argument('-e',type=str, help="File to be encoded")
 parser.add_argument('-d',type=str, nargs=2, help="[file to be decoded] [original filetype]")
-parser.add_argument('-r',action=argparse.BooleanOptionalAction, help="enable rainbow")
+parser.add_argument('-r',action=argparse.BooleanOptionalAction, help="Enable rainbow")
+parser.add_argument('-s',type=int, help="Scale factor. If converted image was scaled then same scale needs to be supplied when decoding")
 args = parser.parse_args()
 
+scale = 1
+
+if(args.s):
+    scale = args.s
+
 if(args.e and args.r):
-    encode_file(args.e, True)
+    encode_file(args.e, True, scale)
 if(args.e and not args.r):
-    encode_file(args.e, False)
+    encode_file(args.e, False, scale)
 if(args.d):
     orig_filename = args.d[0].split("_converted")[0] + "_original." + args.d[1]
-    binary_string  = decode_img(args.d[0])
+    binary_string  = decode_img(args.d[0], scale)
     binary_string_to_file(binary_string, orig_filename)
