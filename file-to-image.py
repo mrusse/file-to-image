@@ -14,7 +14,9 @@ def encode_file(filename, rainbow, scale):
     side_length = get_square_size(len(text_binary))
     img = Image.new('RGB', (side_length,side_length), color = (254,254,254))
 
+    used_height = 0
     current_pixel = 0
+
     for i in range(side_length):
         for j in range(side_length):
             if(not (current_pixel >= len(text_binary))):
@@ -32,19 +34,26 @@ def encode_file(filename, rainbow, scale):
                         color = ImageColor.getrgb("black")
                     img.putpixel((j,i),color)
                     current_pixel += 1
+            
+            elif(used_height == 0):
+                used_height = i+2
 
+    print(used_height)
     extension = os.path.splitext(filename)[1][1:]
     filename_no_extension = filename.split('.')[0]
-    img = img.resize((side_length * scale, side_length * scale), Image.NEAREST)
+    img = img.crop((0,0,side_length,used_height))
+    img = img.resize((side_length * scale, used_height * scale), Image.NEAREST)
     img.save(filename.replace(extension,"png").replace(filename_no_extension,filename_no_extension + "_converted"))
     
 
 def decode_img(filename, scale):
     img = Image.open(filename)
 
-    side_length = img.width
-    img = img.resize((int(side_length * 1/scale), int(side_length * 1/scale)), Image.NEAREST)
-    
+    width = img.width
+    height = img.height
+
+    img = img.resize((int(width * 1/scale), int(height * 1/scale)), Image.NEAREST)
+
     numpy_array = np.array(img)
     text_binary = ""
 
