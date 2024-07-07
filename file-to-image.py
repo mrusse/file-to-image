@@ -38,7 +38,6 @@ def encode_file(filename, rainbow, scale):
             elif(used_height == 0):
                 used_height = i+2
 
-    print(used_height)
     extension = os.path.splitext(filename)[1][1:]
     filename_no_extension = filename.split('.')[0]
     img = img.crop((0,0,side_length,used_height))
