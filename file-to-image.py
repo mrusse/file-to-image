@@ -41,6 +41,10 @@ def encode_file(filename, rainbow, scale):
 
     extension = os.path.splitext(filename)[1][1:]
     filename_no_extension = filename.split('.')[0]
+
+    if(used_height == 0):
+        used_height = side_length
+        
     img = img.crop((0,0,side_length,used_height))
     img = img.resize((side_length * scale, used_height * scale), Image.NEAREST)
     img.save(filename.replace(extension,"png").replace(filename_no_extension,filename_no_extension + "_converted"))
