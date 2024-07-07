@@ -116,7 +116,7 @@ if(args.e and args.r):
 if(args.e and not args.r):
     encode_file(args.e, False, scale)
 if(args.d):
-    orig_filename = args.d[0].split("_converted")[0] + "_original." + args.d[1]
+    orig_filename = args.d[0].split("_converted")[0].split(".")[0] + "_original." + args.d[1]
     binary_string  = decode_img(args.d[0], scale)
     binary_string_to_file(binary_string, orig_filename)
 
