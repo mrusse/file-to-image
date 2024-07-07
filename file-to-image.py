@@ -5,6 +5,7 @@ import argparse
 import numpy as np 
 
 from PIL import Image, ImageColor
+Image.MAX_IMAGE_PIXELS = None
 
 def encode_file(filename, rainbow, scale):
     with open(filename, 'rb') as file:
