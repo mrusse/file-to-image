@@ -2,7 +2,7 @@
 
 Convert any file to an image representing the binary data. The script can also decode the generated images.
 
-![README_converted](https://github.com/mrusse/file-to-image/assets/38119333/4d80f69d-95b4-43b2-935a-234005712b7b)
+![README_converted](https://github.com/mrusse/file-to-image/assets/38119333/9d9bb361-4db3-4ab8-b291-36d34943c199)
 
 The example above is this README file represented as an image (so meta).
 
