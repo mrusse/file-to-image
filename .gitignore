@@ -4,3 +4,4 @@
 .venv
 
 !requirements.txt
+!/resources/README_converted.png

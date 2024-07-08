@@ -2,7 +2,7 @@
 
 Convert any file to an image representing the binary data. The script can also decode the generated images.
 
-![README_converted](https://github.com/mrusse/file-to-image/assets/38119333/9d9bb361-4db3-4ab8-b291-36d34943c199)
+![README_converted](https://github.com/mrusse/file-to-image/blob/main/resources/README_converted.png?raw=true)
 
 The example above is this README file represented as an image (so meta).
 
@@ -19,7 +19,14 @@ To encode a file use the `-e` flag:
 ```
 python file-to-image.py -e file.txt
 ```
-If you encode with the `-r` flag the "high" bits will be a random colour instead of being black (see the above picture for an example).
+The `-c` flag is used to control the color of the image:
+```
+python file-to-image.py -e file.txt -c red
+```
+You can also do `-c random` for random colors (like the example picture above).
+`-c` also accepts a modifer: `fade` which will apply a fade effect to the image based on the color you provided.
+
+***
 
 To decode an image use the `-d` flag. `-d` needs the filename and the extension of the original file:
 ```
