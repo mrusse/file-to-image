@@ -8,7 +8,7 @@ from tqdm import tqdm
 from PIL import Image, ImageColor
 Image.MAX_IMAGE_PIXELS = None
 
-def encode_file(filename, rainbow, scale):
+def encode_file(filename, color_options, scale):
     with open(filename, 'rb') as file:
         binary_content = file.read()
     text_binary = ''.join(format(byte, '08b') for byte in binary_content)
@@ -18,6 +18,8 @@ def encode_file(filename, rainbow, scale):
 
     used_height = 0
     current_pixel = 0
+    fade_counter = 0
+    fade_step= math.ceil(side_length/255)
 
     progress_bar = tqdm(range(side_length), desc = "Encoding file: ", bar_format='{desc}{percentage:3.0f}% |{bar}| Image Line Count: {n_fmt}/{total_fmt}')
 
@@ -29,18 +31,39 @@ def encode_file(filename, rainbow, scale):
                     img.putpixel((j,i),color)
                     current_pixel += 1
                 else:
-                    if(rainbow):
+                    if(color_options):
                         while (True):
-                            color = (random.randint(0,256),random.randint(0,256),random.randint(0,256))
+                            if(color_options == "random"):
+                                color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))
+                            elif(color_options.split(":")[0] == "fade"):
+                                fade_color = color_options.split(":")[1]
+
+                                if(fade_color == "red"):
+                                    color = (fade_counter,0,0)
+                                elif(fade_color == "green"):
+                                    color = (0,fade_counter,0)
+                                elif(fade_color == "blue"):
+                                    color = (0,0,fade_counter)
+                                else:
+                                    color = (fade_counter,fade_counter,fade_counter)
+                            elif(color_options):
+                                if(color_options == "white"):
+                                    color = (253,253,253)
+                                else:
+                                    color = ImageColor.getrgb(color_options)
                             if(color != ImageColor.getrgb("white") and color != (254,254,254)):
                                 break
                     else:
                         color = ImageColor.getrgb("black")
+
                     img.putpixel((j,i),color)
                     current_pixel += 1
-            
+
             elif(used_height == 0):
                 used_height = i+2
+
+        if(i % fade_step == 0):
+            fade_counter += 1
 
     extension = os.path.splitext(filename)[1][1:]
     filename_no_extension = filename.split('.')[0]
@@ -99,25 +122,25 @@ def get_square_size(x):
     return s
 
 parser = argparse.ArgumentParser(description='file-to-image')
-parser.add_argument('-e',type=str, help="File to be encoded")
-parser.add_argument('-d',type=str, nargs=2, help="[file to be decoded] [original filetype]")
-parser.add_argument('-r',action=argparse.BooleanOptionalAction, help="Enable rainbow")
-parser.add_argument('-s',type=int, help="Scale factor. If converted image was scaled then same scale needs to be supplied when decoding")
+parser.add_argument('-e', '--encode', type=str, help="File to be encoded")
+parser.add_argument('-d', '--decode', type=str, nargs=2, help="[file to be decoded] [original filetype]")
+parser.add_argument('-c', '--color', type=str, help="Colour options: random, colour, fade:colour")
+parser.add_argument('-s', '--scale', type=int, help="Scale factor. If converted image was scaled then same scale needs to be supplied when decoding")
 args = parser.parse_args()
 
 start_time = time.time()
 
 scale = 1
-if(args.s):
-    scale = args.s
+if(args.scale):
+    scale = args.scale
 
-if(args.e and args.r):
-    encode_file(args.e, True, scale)
-if(args.e and not args.r):
-    encode_file(args.e, False, scale)
-if(args.d):
-    orig_filename = args.d[0].split("_converted")[0].split(".")[0] + "_original." + args.d[1]
-    binary_string  = decode_img(args.d[0], scale)
+if(args.encode and args.color):
+    encode_file(args.encode, args.color, scale)
+if(args.encode and not args.color):
+    encode_file(args.encode, args.color, scale)
+if(args.decode):
+    orig_filename = args.decode[0].split("_converted")[0].split(".")[0] + "_original." + args.decode[1]
+    binary_string  = decode_img(args.decode[0], scale)
     binary_string_to_file(binary_string, orig_filename)
 
 print("\nFinished in: %s seconds!" % '{0:.2f}'.format(time.time() - start_time))
