@@ -135,7 +135,7 @@ def get_square_size(x):
 parser = argparse.ArgumentParser(description='file-to-image')
 parser.add_argument('-e', '--encode', type=str, help="File to be encoded")
 parser.add_argument('-d', '--decode', type=str, nargs=2, help="[file to be decoded] [original filetype]")
-parser.add_argument('-c', '--color', type=str, nargs='+', help="Colour options: random, colour, fade:colour")
+parser.add_argument('-c', '--color', type=str, nargs='+', help="Colour options: random, color, color fade")
 parser.add_argument('-s', '--scale', type=int, help="Scale factor. If converted image was scaled then same scale needs to be supplied when decoding")
 args = parser.parse_args()
 
