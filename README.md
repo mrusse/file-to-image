@@ -24,7 +24,7 @@ The `-c` flag is used to control the color of the image:
 python file-to-image.py -e file.txt -c red
 ```
 You can also do `-c random` for random colors (like the example picture above).
-`-c` also accepts a modifer: `fade` which will apply a fade effect to the image based on the color you provided.
+`-c` also accepts a modifer: `fade` which will apply a fade effect to the image based on the color you provided. [Here is a list of the available colors.](https://i.sstatic.net/dKcr1.png)
 
 ***
 
