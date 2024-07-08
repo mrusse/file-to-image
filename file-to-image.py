@@ -33,24 +33,35 @@ def encode_file(filename, color_options, scale):
                 else:
                     if(color_options):
                         while (True):
-                            if(color_options == "random"):
+                            if(color_options[0] == "random"):
                                 color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))
-                            elif(color_options.split(":")[0] == "fade"):
-                                fade_color = color_options.split(":")[1]
-
-                                if(fade_color == "red"):
-                                    color = (fade_counter,0,0)
-                                elif(fade_color == "green"):
-                                    color = (0,fade_counter,0)
-                                elif(fade_color == "blue"):
-                                    color = (0,0,fade_counter)
+                            elif("fade" in color_options):
+                                if(color_options[0] == "fade"):
+                                    color = ImageColor.getrgb(color_options[1])
                                 else:
-                                    color = (fade_counter,fade_counter,fade_counter)
+                                    color = ImageColor.getrgb(color_options[0])
+
+                                max_index = 0
+                                color_list = list(color)
+
+                                for x in range(len(color)):
+                                    if(color_list[x] < color_list[max_index]):
+                                        max_index = x
+                                
+                                if(fade_counter == 0):
+                                    color_list[max_index] = 0
+                                else:
+                                    color_list[max_index] = fade_counter
+                                
+                                color = tuple(color_list)
+
+                                if(color == ImageColor.getrgb("white")):
+                                    color = (253,253,253)
                             elif(color_options):
-                                if(color_options == "white"):
+                                if(color_options[0] == "white"):
                                     color = (253,253,253)
                                 else:
-                                    color = ImageColor.getrgb(color_options)
+                                    color = ImageColor.getrgb(color_options[0])
                             if(color != ImageColor.getrgb("white") and color != (254,254,254)):
                                 break
                     else:
@@ -124,7 +135,7 @@ def get_square_size(x):
 parser = argparse.ArgumentParser(description='file-to-image')
 parser.add_argument('-e', '--encode', type=str, help="File to be encoded")
 parser.add_argument('-d', '--decode', type=str, nargs=2, help="[file to be decoded] [original filetype]")
-parser.add_argument('-c', '--color', type=str, help="Colour options: random, colour, fade:colour")
+parser.add_argument('-c', '--color', type=str, nargs='+', help="Colour options: random, colour, fade:colour")
 parser.add_argument('-s', '--scale', type=int, help="Scale factor. If converted image was scaled then same scale needs to be supplied when decoding")
 args = parser.parse_args()
 
